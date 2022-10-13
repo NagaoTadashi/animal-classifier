@@ -12,7 +12,7 @@ wait_time = 1
 
 #保存フォルダの指定
 animal_name = sys.argv[1]
-savedir = "./" + animal_name
+savedir = "./" + "images" + "/" + animal_name
 
 flickr = FlickrAPI(key,secret,format="parsed-json")
 result = flickr.photos.search(
@@ -27,9 +27,8 @@ photos = result["photos"]
 
 for i, photo in enumerate(photos["photo"]):
     url_q = photo["url_q"]
-    filepath = "images" + "/" + savedir + "/" + photo["id"] + ".jpg"
+    filepath =  savedir + "/" + photo["id"] + ".jpg"
     if os.path.exists(filepath):
         continue
     urlretrieve(url_q, filepath)
     time.sleep(wait_time)
-
