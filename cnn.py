@@ -1,8 +1,9 @@
+from tabnanny import verbose
 from keras.models import Sequential
 from keras.layers import Conv2D,MaxPooling2D
 from keras.layers import Activation,Dropout,Flatten,Dense
 from keras.utils import np_utils
-from keras import optimizers
+import keras
 import numpy as np
 
 classes = ["monkey","boar","crow"]
@@ -10,7 +11,7 @@ num_classes = len(classes)
 image_size = 50
 
 def main():
-    X_train,X_test,y_train,y_test = np.load("./data.npy")
+    X_train,X_test,y_train,y_test = np.load("./data.npy",allow_pickle=True)
     X_train = X_train.astype("float")/256
     X_test = X_test.astype("float")/256
     y_train = np_utils.to_categorical(y_train,num_classes)
@@ -42,14 +43,23 @@ def model_train(X,y):
     model.add(Dense(3))
     model.add(Activation("Softmax"))
 
-    opt = optimizers.rmsprop(lr=0.0001,decay=1e-6)
+    opt = keras.optimizers.RMSprop(lr=0.0001, decay=1e-6)
 
     model.compile(loss="categorical_crossentropy",
                 optimizer=opt,
                 metrics=["accuracy"])
     
-    model.fit(X,y,batch_size=32,nb_epoch=100)
+    model.fit(X,y,batch_size=32,epochs=100)
 
-    model.save("./cnn.h5")
+    model.save("./cnn.hdf5")
 
-def model_eval():
+    return model
+
+def model_eval(model,X,y):
+    scores = model.evaluate(X,y,verbose=1)
+    print("Test loss:",scores[0])
+    print("Test accuracy:",scores[1])
+
+if __name__ == "__main__":
+    main()
+
