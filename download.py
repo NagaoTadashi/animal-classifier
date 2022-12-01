@@ -20,6 +20,7 @@ result = flickr.photos.search(
     per_page = 400,
     media = "photos",
     sort = "relevance",
+    safe_search = 1,
     extras = "url_q, license",
     )
 
